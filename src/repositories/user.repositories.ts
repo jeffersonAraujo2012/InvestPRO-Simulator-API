@@ -1,16 +1,26 @@
 import { prisma } from "@/config/database";
+import { SignupDataProps } from "@/protocols";
 import { User } from "@prisma/client";
 
-async function findUnique(email: string): Promise<User> {
-  return await prisma.user.findUnique({
+async function findByEmail(email: string): Promise<User> {
+  return prisma.user.findUnique({
     where: {
       email: email,
     },
   });
 }
 
+async function create(
+  signupData: Omit<SignupDataProps, "confirmPassword">
+): Promise<User> {
+  return prisma.user.create({
+    data: signupData,
+  });
+}
+
 const userRepositories = {
-  findUnique,
+  findByEmail,
+  create,
 };
 
 export default userRepositories;

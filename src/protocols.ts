@@ -1,11 +1,18 @@
 type ApplicationError = {
   name: string;
   message: string;
-}
+};
 
 type UserDataProps = {
   email: string;
   password: string;
-}
+};
 
-export { ApplicationError, UserDataProps };
+type SignupDataProps = {
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+};
+
+export { ApplicationError, UserDataProps, SignupDataProps };
