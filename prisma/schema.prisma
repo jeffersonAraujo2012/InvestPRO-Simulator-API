@@ -15,4 +15,25 @@ model User {
   name String
   email String @unique
   password String
+  wallet Wallet[]
+}
+
+model Wallet {
+  id Int @id @default(autoincrement())
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId Int
+  name String
+  balance Float @default(10000.00)
+  stockInWallet StockInWallet[]
+  initialDate DateTime @default(now())
+}
+
+model StockInWallet {
+  id Int @id @default(autoincrement())
+  wallet Wallet @relation(fields: [walletId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  walletId Int
+  symbol String
+  quantity Int
+  unitPrice Float
+  createdAt DateTime @default(now())
 }
