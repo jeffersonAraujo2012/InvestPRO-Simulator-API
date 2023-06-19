@@ -15,4 +15,16 @@ type SignupDataProps = {
   confirmPassword: string;
 };
 
-export { ApplicationError, UserDataProps, SignupDataProps };
+type BuyStockRequestProps = {
+  walletId?: number;
+  stock: string;
+  price: number;
+  quantity: number;
+};
+
+export {
+  ApplicationError,
+  UserDataProps,
+  SignupDataProps,
+  BuyStockRequestProps,
+};
