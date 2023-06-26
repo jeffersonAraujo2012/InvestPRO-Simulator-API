@@ -15,7 +15,7 @@ type SignupDataProps = {
   confirmPassword: string;
 };
 
-type BuyStockRequestProps = {
+type BuyAndSaleStockRequestProps = {
   walletId?: number;
   stock: string;
   price: number;
@@ -26,5 +26,5 @@ export {
   ApplicationError,
   UserDataProps,
   SignupDataProps,
-  BuyStockRequestProps,
+  BuyAndSaleStockRequestProps,
 };
