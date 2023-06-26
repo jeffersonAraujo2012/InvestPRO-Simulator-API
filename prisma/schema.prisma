@@ -10,6 +10,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum TypeOperation {
+  buy
+  sale
+}
+
 model User {
   id Int @id @default(autoincrement())
   name String
@@ -24,16 +29,17 @@ model Wallet {
   userId Int
   name String
   balance Float @default(10000.00)
-  stockInWallet StockInWallet[]
+  walletOperation WalletOperation[]
   initialDate DateTime @default(now())
 }
 
-model StockInWallet {
+model WalletOperation {
   id Int @id @default(autoincrement())
   wallet Wallet @relation(fields: [walletId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   walletId Int
   symbol String
   quantity Int
   unitPrice Float
+  type TypeOperation
   createdAt DateTime @default(now())
 }
