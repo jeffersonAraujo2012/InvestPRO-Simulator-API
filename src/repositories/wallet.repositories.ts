@@ -1,6 +1,8 @@
 import { prisma } from "@/config/database";
-import { BuyStockRequestProps } from "@/protocols";
-import { StockInWallet, Wallet } from "@prisma/client";
+import { BuyAndSaleStockRequestProps } from "@/protocols";
+import { Wallet, WalletOperation } from "@prisma/client";
+import dotenv from "dotenv";
+dotenv.config();
 
 async function findManyByUserId(userId: number): Promise<Wallet[]> {
   return prisma.wallet.findMany({
@@ -23,46 +25,55 @@ type WalletIdStockSymbol = {
   stock: string;
 };
 
-async function findStockInWalletByWalletIdAndStockSymbol(
+async function findWalletOperationByWalletIdAndStockSymbol(
   data: WalletIdStockSymbol
 ) {
-  return prisma.stockInWallet.findFirst({
+  const buyQuantitySum = await prisma.walletOperation.aggregate({
     where: {
       walletId: data.walletId,
       symbol: data.stock,
+      type: 'buy',
+    },
+    _sum: {
+      quantity: true,
     },
   });
+
+  const saleQuantitySum = await prisma.walletOperation.aggregate({
+    where: {
+      walletId: data.walletId,
+      symbol: data.stock,
+      type: 'sale',
+    },
+    _sum: {
+      quantity: true,
+    },
+  });
+
+  const buyQuantity = buyQuantitySum._sum.quantity || 0;
+  const saleQuantity = saleQuantitySum._sum.quantity || 0;
+
+  return buyQuantity - saleQuantity;
+
 }
 
-type CreateOrUpdateStockInWalltetProps = BuyStockRequestProps & {
-  prev: StockInWallet;
+type CreateOrUpdateWalletOperationProps = BuyAndSaleStockRequestProps & {
+  type: 'buy' | 'sale'
 };
 
-async function createOrUpdateStockInWalltet(
-  buyStockData: CreateOrUpdateStockInWalltetProps
-): Promise<StockInWallet> {
-  const { stock, price, quantity, walletId, prev } = buyStockData;
+async function createOrUpdateWalletOperation(
+  buyStockData: CreateOrUpdateWalletOperationProps
+): Promise<WalletOperation> {
+  const { stock, price, quantity, walletId, type } = buyStockData;
 
   const results = await prisma.$transaction([
-    prisma.stockInWallet.upsert({
-      create: {
+    prisma.walletOperation.create({
+      data: {
+        type,
         walletId: walletId,
         symbol: stock,
         quantity: quantity,
         unitPrice: price,
-      },
-
-      where: {
-        id: prev?.id || -1,
-      },
-
-      update: {
-        quantity: {
-          increment: quantity,
-        },
-        unitPrice:
-          (prev?.quantity * prev?.unitPrice + quantity * price) /
-            (prev?.quantity + quantity) || 0,
       },
     }),
     prisma.wallet.update({
@@ -71,7 +82,7 @@ async function createOrUpdateStockInWalltet(
       },
       data: {
         balance: {
-          decrement: quantity * price,
+          decrement: type === 'buy' ? (quantity * price) : (-quantity * price),
         },
       },
     }),
@@ -82,8 +93,8 @@ async function createOrUpdateStockInWalltet(
 
 const walletRepositories = {
   findManyByUserId,
-  createOrUpdateStockInWalltet,
-  findStockInWalletByWalletIdAndStockSymbol,
+  createOrUpdateWalletOperation,
+  findWalletOperationByWalletIdAndStockSymbol,
   findById,
 };
 
