@@ -1,4 +1,4 @@
-import { getAllUserWallet, buyStock, sellStock } from "@/controllers/wallet.controller";
+import { getAllUserWallet, buyStock, sellStock } from "./wallets.controllers";
 import auth from "@/middlewares/auth.middleware";
 import { Router } from "express";
 import {

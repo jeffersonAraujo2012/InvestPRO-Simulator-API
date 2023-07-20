@@ -1,7 +1,7 @@
 import { AuthRequest } from "@/middlewares/auth.middleware";
 import { Response } from "express";
 import httpStatus from "http-status";
-import walletService from "@/services/wallet.services";
+import walletService from "./wallets.services";
 import { BuyAndSaleStockRequestProps } from "@/protocols";
 
 export async function getAllUserWallet(req: AuthRequest, res: Response) {

@@ -1,5 +1,5 @@
 import { WalletOperation, Wallet } from "@prisma/client";
-import walletRepositories from "@/repositories/wallet.repositories";
+import walletRepositories from "./wallets.repositories";
 import { BuyAndSaleStockRequestProps } from "@/protocols";
 import axios from "axios";
 import { notFoundError } from "@/errors/not-found.error";
