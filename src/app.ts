@@ -1,8 +1,8 @@
 import express, { Express } from "express";
 import cors from "cors";
-import authRouter from "./routers/auth.routes";
+import authRouter from "./modules/auth/auth.routes";
 import { connectDb, disconnectDB } from "./config/database";
-import walletRouter from "./routers/wallet.routes";
+import walletRouter from "./modules/wallets/wallets.routes";
 
 const app = express();
 

@@ -1,6 +1,6 @@
 import { unauthorizedError } from "@/errors";
 import { SignupDataProps, UserDataProps } from "@/protocols";
-import userRepositories from "@/repositories/user.repositories";
+import userRepositories from "@/modules/users/users.repositories";
 import { User } from "@prisma/client";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
