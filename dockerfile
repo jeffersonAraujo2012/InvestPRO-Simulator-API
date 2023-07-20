@@ -6,6 +6,6 @@ COPY . .
 
 RUN npm i
 
-RUN npm run build
+RUN chmod +x ./wait-for-it.sh
 
-CMD ["npm", "start"]
+CMD ["bash", "-c", "./wait-for-it.sh database:5432 -- npx prisma migrate dev && npm run build && npm start"]
